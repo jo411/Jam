@@ -118,25 +118,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 100338, guid: fdffd82b7fc6a6e45a360dd2dd07d6a0,
     type: 2}
   m_PrefabInternal: {fileID: 301718767}
---- !u!114 &127640923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 127640921}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9001bcbd91e76437cb0f52f12764f2f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animSpeed: 1.5
-  lookSmoother: 3
-  useCurves: 1
-  useCurvesHeight: 0.5
-  forwardSpeed: 7
-  backwardSpeed: 2
-  rotateSpeed: 2
-  jumpPower: 3
+--- !u!4 &127640927 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400100, guid: fdffd82b7fc6a6e45a360dd2dd07d6a0,
+    type: 2}
+  m_PrefabInternal: {fileID: 301718767}
 --- !u!114 &127640928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,9 +137,13 @@ MonoBehaviour:
   look: {x: 0, y: 0, z: 0}
   lastLook: 0
   vel: 5
+  jumpStr: 4000
   rotateSpeed: 20
+  inAir: 0
+  jumpPressed: 0
   isMoving: 0
   mainCamera: {fileID: 0}
+  anim: {fileID: 0}
 --- !u!1001 &301718767
 Prefab:
   m_ObjectHideFlags: 0
@@ -209,8 +199,13 @@ Prefab:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 13600000, guid: fdffd82b7fc6a6e45a360dd2dd07d6a0, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11400002, guid: fdffd82b7fc6a6e45a360dd2dd07d6a0, type: 2}
+    - {fileID: 13600000, guid: fdffd82b7fc6a6e45a360dd2dd07d6a0, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: fdffd82b7fc6a6e45a360dd2dd07d6a0, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &334680392
@@ -298,6 +293,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &373886473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 373886474}
+  - component: {fileID: 373886475}
+  m_Layer: 0
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &373886474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 373886473}
+  m_LocalRotation: {x: 0.0012559892, y: -0.7071057, z: 0.0012559892, w: 0.7071057}
+  m_LocalPosition: {x: 0.0030871048, y: -0.0004120469, z: 0.011826882}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 127640927}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!65 &373886475
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 373886473}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.27, y: 1.4658381, z: 0.45}
+  m_Center: {x: -0.0000000023474904, y: 0.73291206, z: 0.000000009212526}
 --- !u!1 &432642295
 GameObject:
   m_ObjectHideFlags: 0

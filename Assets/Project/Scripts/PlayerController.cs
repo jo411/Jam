@@ -8,7 +8,12 @@ public class PlayerController : MonoBehaviour {
     public Vector3 look;
     public float lastLook;
     public float vel = .1f;
+    public float jumpStr;
     public float rotateSpeed;
+    public bool inAir;
+    public bool jumpPressed;
+
+    Rigidbody rb;
 
     [HideInInspector]
     public bool isMoving;
@@ -20,7 +25,7 @@ public class PlayerController : MonoBehaviour {
         look = transform.forward;
         lastLook = transform.forward.x + transform.forward.z;      
         mainCamera = Camera.main.gameObject;
-
+        rb = GetComponent<Rigidbody>();
 
         anim = GetComponent<Animator>();
         if (anim == null)
@@ -33,20 +38,56 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 
         doMove();
-        
+        checkHeight();
 	}
+
+    public void checkHeight()
+    {
+        int layerMask = 1;
+
+        RaycastHit hit;
+
+        if(Physics.Raycast(transform.position,-transform.up,out hit,Mathf.Infinity,layerMask))
+        {
+            Debug.Log(hit.distance);
+            Debug.DrawRay(transform.position, -transform.up * hit.distance, Color.red);
+            if (hit.distance<.05)
+            {
+                inAir = false;
+            }
+            else
+            {
+                inAir = true;
+            }
+        }
+        else
+        {
+            //inAir = true;
+        }
+
+        anim.SetBool("onGround", !inAir);
+    }
+    public void animFinished(string animName)
+    {
+        if(animName.Equals("Jump"))
+        {
+            anim.SetBool("Jump", false);
+        }
+    }
 
 
     public void doMove()
     {
-        
-        if(Input.GetAxis("Jump")>0)
+        Debug.Log(rb.velocity.y);
+        if(Input.GetAxis("Jump")>0&& !jumpPressed && !inAir&&rb.velocity.y<=0.01)
         {
-            anim.SetBool("Jump", true);
+            anim.SetBool("Jump", true);            
+            rb.AddForce(0, jumpStr, 0);
+            jumpPressed = true;
         }
         else
-        {
-            anim.SetBool("Jump", false);
+        {           
+            jumpPressed = false;
         }
 
 
