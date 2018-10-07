@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour {
     public bool inAir;
     public bool jumpPressed;
 
+    public bool actionLock;
+
     Rigidbody rb;
 
     [HideInInspector]
@@ -21,7 +23,9 @@ public class PlayerController : MonoBehaviour {
 
     public Animator anim;
 
-	void Start () {
+    Transform currentTurnPoint;
+
+    void Start () {
         look = transform.forward;
         lastLook = transform.forward.x + transform.forward.z;      
         mainCamera = Camera.main.gameObject;
@@ -35,11 +39,67 @@ public class PlayerController : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
-        doMove();
-        checkHeight();
+        if(!actionLock)
+        {
+            doMove();
+            checkHeight();
+            rotateCheck();
+        }
+
+        
+      
 	}
+
+    void rotateCheck()
+    {
+        if(Input.GetButtonDown("Vertical"))
+        {
+            if(currentTurnPoint!=null)
+            {
+                anim.SetFloat("Speed", 0);
+                actionLock = true;
+                transform.position = currentTurnPoint.position;
+                float dotF = Mathf.Abs(Vector3.Dot(mainCamera.transform.right, currentTurnPoint.forward));
+                float dotR = Mathf.Abs(Vector3.Dot(mainCamera.transform.right, currentTurnPoint.right));
+
+                Debug.Log(dotF + " " + dotR);
+                int angle = 0;
+
+                if (dotF < .001)//turning from right to forward
+                {
+                    if (currentTurnPoint.gameObject.GetComponent<dimChangerDirection>().rightToForwardCCW)
+                    {
+                        angle = -1;
+                    }
+                    else
+                    {
+                        angle = 1;
+                    }
+                    
+                }
+                else if (dotR < .001)//turning forward to right
+                {
+                    if (currentTurnPoint.gameObject.GetComponent<dimChangerDirection>().forwardToRightCCW)
+                    {
+                        angle = -1;
+                    }
+                    else
+                    {
+                        angle = 1;
+                    }
+                }
+
+               
+                
+
+                
+               mainCamera.GetComponent<rotateCamera>().startRotate(angle);
+            }
+          
+        }
+    }
 
     public void checkHeight()
     {
@@ -49,9 +109,9 @@ public class PlayerController : MonoBehaviour {
 
         if(Physics.Raycast(transform.position,-transform.up,out hit,Mathf.Infinity,layerMask))
         {
-            Debug.Log(hit.distance);
+            
             Debug.DrawRay(transform.position, -transform.up * hit.distance, Color.red);
-            if (hit.distance<.05)
+            if (hit.distance<.01)
             {
                 inAir = false;
             }
@@ -73,12 +133,14 @@ public class PlayerController : MonoBehaviour {
         {
             anim.SetBool("Jump", false);
         }
+
+      
     }
 
 
     public void doMove()
     {
-        Debug.Log(rb.velocity.y);
+
         if(Input.GetAxis("Jump")>0&& !jumpPressed && !inAir&&rb.velocity.y<=0.01)
         {
             anim.SetBool("Jump", true);            
@@ -128,6 +190,24 @@ public class PlayerController : MonoBehaviour {
         }
 
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * rotateSpeed);      
-        transform.position += mainCamera.transform.right * horiz * vel * Time.deltaTime;
+        //transform.position += mainCamera.transform.right * horiz * vel * Time.deltaTime;
+        rb.AddForce(mainCamera.transform.right * horiz * vel* Time.deltaTime);
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag.Equals("DimChange"))
+        {
+            currentTurnPoint = other.transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag.Equals("DimChange"))
+        {
+            currentTurnPoint = null;
+        }
     }
 }

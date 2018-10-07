@@ -9,10 +9,12 @@ public class CameraFollowPlayer : MonoBehaviour {
 
     public float forwardMoveOffset = 0.1f;
 
-    public float cameraVel = 6f;
+    public float cameraVel = 7f;
 
     public PlayerController pc;
 
+
+   
     // Use this for initialization
     void Start()
     {
@@ -32,7 +34,7 @@ public class CameraFollowPlayer : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void LateUpdate () {
+	void FixedUpdate () {
         //transform.position = player.transform.position+offset;
 
         Vector3 slerpOffset = transform.position;
@@ -41,8 +43,15 @@ public class CameraFollowPlayer : MonoBehaviour {
         {
            slerpOffset += pc.look * forwardMoveOffset;
         }
+        Vector3 offsetRight=new Vector3(offset.z, offset.z, offset.z);
+        Vector3 offsetUp= new Vector3(offset.y, offset.y, offset.y);
+        Vector3 offsetForward=new Vector3(offset.x, offset.x, offset.x);
 
-        transform.position = Vector3.Slerp(slerpOffset, player.transform.position+offset, Time.deltaTime*cameraVel);
+        Vector3 cameraTarget = transform.right * offset.z + transform.up * offset.y + transform.forward * offset.x;
+
+        transform.position = Vector3.Slerp(slerpOffset, player.transform.position+ cameraTarget, Time.deltaTime*cameraVel);
 
 	}
+
+ 
 }
